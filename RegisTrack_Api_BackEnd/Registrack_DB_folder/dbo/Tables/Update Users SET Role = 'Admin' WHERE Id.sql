@@ -1,0 +1,1 @@
+Update Users SET Role = 'Admin' WHERE Id = 2

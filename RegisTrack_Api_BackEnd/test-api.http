@@ -1,0 +1,539 @@
+### RegisTrack API Testing File
+### Use this file to test all API endpoints
+
+@baseUrl = https://localhost:7000/api
+@userId = 1
+@documentTypeId = 1
+@documentRequestId = 1
+@announcementId = 1
+@requirementId = 1
+@token = your-jwt-token-here
+
+###############################################
+# AUTHENTICATION API TESTS
+###############################################
+
+### 1. Register new user
+POST {{baseUrl}}/Auth/register
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@aclc.edu.ph",
+  "studentId": "STU-2024-001",
+  "password": "SecurePass123!",
+  "confirmPassword": "SecurePass123!"
+}
+
+### 2. Login with credentials
+POST {{baseUrl}}/Auth/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@aclc.edu.ph",
+  "password": "SecurePass123!"
+}
+
+### 3. Login with invalid credentials (should fail)
+POST {{baseUrl}}/Auth/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@aclc.edu.ph",
+  "password": "WrongPassword123!"
+}
+
+### 4. Register with existing email (should fail)
+POST {{baseUrl}}/Auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "email": "john.doe@aclc.edu.ph",
+  "studentId": "STU-2024-002",
+  "password": "SecurePass123!",
+  "confirmPassword": "SecurePass123!"
+}
+
+### 5. Register with password mismatch (should fail)
+POST {{baseUrl}}/Auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "email": "jane.smith@aclc.edu.ph",
+  "studentId": "STU-2024-003",
+  "password": "SecurePass123!",
+  "confirmPassword": "DifferentPass123!"
+}
+
+###############################################
+# USERS API TESTS
+###############################################
+
+### 1. Create a new user (Student)
+POST {{baseUrl}}/Users
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@aclc.edu.ph",
+  "studentId": "STU-2024-001",
+  "password": "SecurePass123!",
+  "role": "Student"
+}
+
+### 2. Create an admin user
+POST {{baseUrl}}/Users
+Content-Type: application/json
+
+{
+  "firstName": "Admin",
+  "lastName": "User",
+  "email": "admin@aclc.edu.ph",
+  "studentId": "ADM-2024-001",
+  "password": "AdminPass123!",
+  "role": "Admin"
+}
+
+### 3. Get all users
+GET {{baseUrl}}/Users
+
+### 4. Get users by role
+GET {{baseUrl}}/Users?role=Student
+
+### 5. Get active users only
+GET {{baseUrl}}/Users?isActive=true
+
+### 6. Get specific user
+GET {{baseUrl}}/Users/{{userId}}
+
+### 7. Update user
+PUT {{baseUrl}}/Users/{{userId}}
+Content-Type: application/json
+
+{
+  "firstName": "John Updated",
+  "email": "john.updated@aclc.edu.ph",
+  "isActive": true
+}
+
+### 8. Delete user (will fail if has requests)
+DELETE {{baseUrl}}/Users/{{userId}}
+
+###############################################
+# DOCUMENT TYPES API TESTS
+###############################################
+
+### 9. Create document type - Transcript
+POST {{baseUrl}}/DocumentTypes
+Content-Type: application/json
+
+{
+  "name": "Transcript of Records",
+  "description": "Official academic transcript showing all courses and grades",
+  "processingFee": 150.00,
+  "processingDays": 5
+}
+
+### 10. Create document type - Certificate
+POST {{baseUrl}}/DocumentTypes
+Content-Type: application/json
+
+{
+  "name": "Certificate of Enrollment",
+  "description": "Proof of current enrollment status",
+  "processingFee": 50.00,
+  "processingDays": 2
+}
+
+### 11. Create document type - Diploma
+POST {{baseUrl}}/DocumentTypes
+Content-Type: application/json
+
+{
+  "name": "Diploma",
+  "description": "Official graduation diploma",
+  "processingFee": 500.00,
+  "processingDays": 10
+}
+
+### 12. Get all document types
+GET {{baseUrl}}/DocumentTypes
+
+### 13. Get active document types only
+GET {{baseUrl}}/DocumentTypes?isActive=true
+
+### 14. Get specific document type
+GET {{baseUrl}}/DocumentTypes/{{documentTypeId}}
+
+### 15. Update document type
+PUT {{baseUrl}}/DocumentTypes/{{documentTypeId}}
+Content-Type: application/json
+
+{
+  "processingFee": 175.00,
+  "processingDays": 4
+}
+
+### 16. Deactivate document type
+PUT {{baseUrl}}/DocumentTypes/{{documentTypeId}}
+Content-Type: application/json
+
+{
+  "isActive": false
+}
+
+### 17. Delete document type (will fail if has requests)
+DELETE {{baseUrl}}/DocumentTypes/{{documentTypeId}}
+
+###############################################
+# DOCUMENT REQUIREMENTS API TESTS
+###############################################
+
+### 18. Create requirement for Transcript
+POST {{baseUrl}}/DocumentRequirements
+Content-Type: application/json
+
+{
+  "documentTypeId": 1,
+  "requirementName": "Valid Government ID",
+  "description": "Any government-issued ID (Driver's License, Passport, etc.)",
+  "isMandatory": true,
+  "displayOrder": 1
+}
+
+### 19. Create another requirement
+POST {{baseUrl}}/DocumentRequirements
+Content-Type: application/json
+
+{
+  "documentTypeId": 1,
+  "requirementName": "Request Form",
+  "description": "Completed and signed document request form",
+  "isMandatory": true,
+  "displayOrder": 2
+}
+
+### 20. Create optional requirement
+POST {{baseUrl}}/DocumentRequirements
+Content-Type: application/json
+
+{
+  "documentTypeId": 1,
+  "requirementName": "Authorization Letter",
+  "description": "Required only if requesting on behalf of another person",
+  "isMandatory": false,
+  "displayOrder": 3
+}
+
+### 21. Get all requirements
+GET {{baseUrl}}/DocumentRequirements
+
+### 22. Get requirements for specific document type
+GET {{baseUrl}}/DocumentRequirements?documentTypeId=1
+
+### 23. Get specific requirement
+GET {{baseUrl}}/DocumentRequirements/{{requirementId}}
+
+### 24. Update requirement
+PUT {{baseUrl}}/DocumentRequirements/{{requirementId}}
+Content-Type: application/json
+
+{
+  "description": "Updated description for the requirement",
+  "displayOrder": 1
+}
+
+### 25. Delete requirement
+DELETE {{baseUrl}}/DocumentRequirements/{{requirementId}}
+
+###############################################
+# DOCUMENT REQUESTS API TESTS
+###############################################
+
+### 26. Create document request
+POST {{baseUrl}}/DocumentRequests
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "documentTypeId": 1,
+  "purpose": "Job application requirements for ABC Company",
+  "quantity": 2,
+  "notes": "Please expedite if possible"
+}
+
+### 27. Create another request
+POST {{baseUrl}}/DocumentRequests
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "documentTypeId": 2,
+  "purpose": "Scholarship application for XYZ Foundation",
+  "quantity": 1
+}
+
+### 28. Get all document requests
+GET {{baseUrl}}/DocumentRequests
+
+### 29. Get requests with pagination
+GET {{baseUrl}}/DocumentRequests?page=1&pageSize=10
+
+### 30. Get requests by status
+GET {{baseUrl}}/DocumentRequests?status=Request
+
+### 31. Get requests by user
+GET {{baseUrl}}/DocumentRequests?userId=1
+
+### 32. Get specific request
+GET {{baseUrl}}/DocumentRequests/{{documentRequestId}}
+
+### 33. Track request by reference number (Public tracking)
+GET {{baseUrl}}/DocumentRequests/reference/DR20240323001
+
+### 34. Update request status to InProcess
+PUT {{baseUrl}}/DocumentRequests/{{documentRequestId}}
+Content-Type: application/json
+
+{
+  "status": "InProcess",
+  "notes": "Processing has started",
+  "processedBy": 2
+}
+
+### 35. Update request status to Approve
+PUT {{baseUrl}}/DocumentRequests/{{documentRequestId}}
+Content-Type: application/json
+
+{
+  "status": "Approve",
+  "notes": "Request approved by registrar",
+  "approvedBy": 2
+}
+
+### 36. Update request status to Receive
+PUT {{baseUrl}}/DocumentRequests/{{documentRequestId}}
+Content-Type: application/json
+
+{
+  "status": "Receive",
+  "notes": "Document is ready for pickup",
+  "documentUrl": "https://storage.example.com/documents/transcript-001.pdf"
+}
+
+### 37. Update request status to Download
+PUT {{baseUrl}}/DocumentRequests/{{documentRequestId}}
+Content-Type: application/json
+
+{
+  "status": "Download",
+  "notes": "Document has been released to student"
+}
+
+### 38. Try invalid status transition (should fail)
+PUT {{baseUrl}}/DocumentRequests/{{documentRequestId}}
+Content-Type: application/json
+
+{
+  "status": "Request",
+  "notes": "Trying to go back to Request from Download"
+}
+
+### 39. Delete request (only works in Request status)
+DELETE {{baseUrl}}/DocumentRequests/{{documentRequestId}}
+
+###############################################
+# ANNOUNCEMENTS API TESTS
+###############################################
+
+### 40. Create urgent announcement
+POST {{baseUrl}}/Announcements
+Content-Type: application/json
+
+{
+  "title": "System Maintenance Notice",
+  "content": "The RegisTrack system will undergo maintenance on March 25, 2024 from 10:00 PM to 2:00 AM. All services will be temporarily unavailable during this period.",
+  "priority": "Urgent",
+  "createdBy": 2,
+  "expiryDate": "2024-03-26T02:00:00Z"
+}
+
+### 41. Create normal announcement
+POST {{baseUrl}}/Announcements
+Content-Type: application/json
+
+{
+  "title": "New Document Processing Hours",
+  "content": "Starting April 1, 2024, the registrar office will process document requests from 8:00 AM to 5:00 PM, Monday to Friday.",
+  "priority": "Normal",
+  "createdBy": 2,
+  "expiryDate": "2024-04-30T00:00:00Z"
+}
+
+### 42. Create high priority announcement
+POST {{baseUrl}}/Announcements
+Content-Type: application/json
+
+{
+  "title": "Holiday Office Closure",
+  "content": "The registrar office will be closed on March 29, 2024 in observance of a national holiday. Regular operations will resume on April 1, 2024.",
+  "priority": "High",
+  "createdBy": 2,
+  "expiryDate": "2024-04-01T00:00:00Z"
+}
+
+### 43. Get all active announcements
+GET {{baseUrl}}/Announcements
+
+### 44. Get announcements by priority
+GET {{baseUrl}}/Announcements?priority=Urgent
+
+### 45. Get specific announcement
+GET {{baseUrl}}/Announcements/{{announcementId}}
+
+### 46. Update announcement
+PUT {{baseUrl}}/Announcements/{{announcementId}}
+Content-Type: application/json
+
+{
+  "title": "Updated: System Maintenance Notice",
+  "content": "The maintenance window has been extended to 4:00 AM.",
+  "expiryDate": "2024-03-26T04:00:00Z"
+}
+
+### 47. Deactivate announcement
+PUT {{baseUrl}}/Announcements/{{announcementId}}
+Content-Type: application/json
+
+{
+  "isActive": false
+}
+
+### 48. Delete announcement
+DELETE {{baseUrl}}/Announcements/{{announcementId}}
+
+###############################################
+# VALIDATION TESTS (Should Fail)
+###############################################
+
+### 49. Create user with invalid email
+POST {{baseUrl}}/Users
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "invalid-email",
+  "studentId": "STU-2024-999",
+  "password": "SecurePass123!",
+  "role": "Student"
+}
+
+### 50. Create user with weak password
+POST {{baseUrl}}/Users
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "test@example.com",
+  "studentId": "STU-2024-998",
+  "password": "weak",
+  "role": "Student"
+}
+
+### 51. Create document request with invalid purpose (too short)
+POST {{baseUrl}}/DocumentRequests
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "documentTypeId": 1,
+  "purpose": "Short",
+  "quantity": 1
+}
+
+### 52. Create document request with invalid quantity
+POST {{baseUrl}}/DocumentRequests
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "documentTypeId": 1,
+  "purpose": "Valid purpose for testing",
+  "quantity": 150
+}
+
+### 53. Create announcement with past expiry date
+POST {{baseUrl}}/Announcements
+Content-Type: application/json
+
+{
+  "title": "Test Announcement",
+  "content": "This should fail due to past expiry date",
+  "priority": "Normal",
+  "createdBy": 2,
+  "expiryDate": "2020-01-01T00:00:00Z"
+}
+
+###############################################
+# COMPLEX WORKFLOW TEST
+###############################################
+
+### 54. Complete workflow: Create user, document type, requirement, and request
+### Step 1: Create student
+POST {{baseUrl}}/Users
+Content-Type: application/json
+
+{
+  "firstName": "Maria",
+  "lastName": "Santos",
+  "email": "maria.santos@aclc.edu.ph",
+  "studentId": "STU-2024-100",
+  "password": "MariaPass123!",
+  "role": "Student"
+}
+
+### Step 2: Create document type
+POST {{baseUrl}}/DocumentTypes
+Content-Type: application/json
+
+{
+  "name": "Certificate of Good Moral",
+  "description": "Certificate attesting to good moral character",
+  "processingFee": 100.00,
+  "processingDays": 3
+}
+
+### Step 3: Add requirements
+POST {{baseUrl}}/DocumentRequirements
+Content-Type: application/json
+
+{
+  "documentTypeId": 4,
+  "requirementName": "Clearance Form",
+  "description": "Fully cleared from all departments",
+  "isMandatory": true,
+  "displayOrder": 1
+}
+
+### Step 4: Create request
+POST {{baseUrl}}/DocumentRequests
+Content-Type: application/json
+
+{
+  "userId": 3,
+  "documentTypeId": 4,
+  "purpose": "Transfer to another institution",
+  "quantity": 1,
+  "notes": "Needed urgently for enrollment deadline"
+}
+
+### Step 5: Process the request through all statuses
+# (Use the reference number from Step 4 response)
