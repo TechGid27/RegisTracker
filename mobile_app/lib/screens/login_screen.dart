@@ -4,6 +4,7 @@ import 'student_dashboard.dart';
 import 'staff_dashboard.dart';
 import 'admin_dashboard.dart';
 import 'superadmin_dashboard.dart';
+import 'forgot_password_screen.dart';
 import 'register_screen.dart';
 import 'public_lookup_screen.dart';
 import '../services/api_service.dart';
@@ -89,6 +90,25 @@ class _LoginScreenState extends State<LoginScreen> {
                             builder: (context, isObscure, _) {
                               return _buildPasswordField(isObscure);
                             },
+                          ),
+                          const SizedBox(height: 4),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const ForgotPasswordScreen()),
+                              ),
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: const Text(
+                                'Forgot Password?',
+                                style: TextStyle(color: primaryColor, fontWeight: FontWeight.w600, fontSize: 13),
+                              ),
+                            ),
                           ),
                           const SizedBox(height: 20),
 

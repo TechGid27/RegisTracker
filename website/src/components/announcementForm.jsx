@@ -70,18 +70,23 @@ export default function AnnouncementForm({ initialData, onClear = () => {} }) {
     // Diri i-check kon naay kulang sa fields
     if (!validateForm()) return;
 
-    setSubmitting(true);
     const loggedInUser = JSON.parse(localStorage.getItem('user'));
-    const currentAdminId = loggedInUser?.id || 8;
+    const currentAdminId = loggedInUser?.id;
+    if (!currentAdminId) {
+      setApiError("Session expired. Please log in again.");
+      setSubmitting(false);
+      return;
+    }
 
     const payload = {
       title: formData.title.trim(),
       content: formData.content.trim(),
-      priority: formData.priority, 
+      priority: formData.priority,
       createdBy: initialData ? initialData.createdBy : Number(currentAdminId),
       expiryDate: formData.expiryDate ? new Date(formData.expiryDate).toISOString() : null
     };
 
+    setSubmitting(true);
     try {
       if (initialData?.id) {
         await AnnouncementService.update(initialData.id, payload);

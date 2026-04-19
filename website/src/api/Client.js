@@ -42,6 +42,8 @@ export const request = async (endpoint, options = {}) => {
     let errorMessage = "Something went wrong";
     if (errorData.errors) {
       errorMessage = Object.values(errorData.errors).flat().join(", ");
+    } else if (errorData.message) {
+      errorMessage = errorData.message;
     } else if (errorData.title) {
       errorMessage = errorData.title;
     }

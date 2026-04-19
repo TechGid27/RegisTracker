@@ -16,6 +16,9 @@ public class CreateDocumentRequestDto
     
     [Range(1, 100, ErrorMessage = "Quantity must be between 1 and 100")]
     public int Quantity { get; set; } = 1;
+
+    // Mobile sends "copies" — map to Quantity
+    public int? Copies { set { if (value.HasValue && value.Value >= 1) Quantity = value.Value; } }
     
     [StringLength(2000, ErrorMessage = "Notes cannot exceed 2000 characters")]
     public string? Notes { get; set; }
@@ -50,6 +53,8 @@ public class DocumentRequestResponseDto
     public string DocumentTypeName { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public int Quantity { get; set; }
+    // Mobile reads "copies" — alias for Quantity
+    public int Copies => Quantity;
     public string Purpose { get; set; } = string.Empty;
     public string Notes { get; set; } = string.Empty;
     public DateTime RequestDate { get; set; }
@@ -58,4 +63,6 @@ public class DocumentRequestResponseDto
     public DateTime? CompletedDate { get; set; }
     public string DocumentUrl { get; set; } = string.Empty;
     public bool EmailSent { get; set; }
+    // Mobile uses updatedAt for notification logic
+    public DateTime? UpdatedAt => ProcessedDate ?? ApprovedDate ?? CompletedDate;
 }

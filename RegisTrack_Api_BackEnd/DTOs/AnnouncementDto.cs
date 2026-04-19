@@ -43,10 +43,13 @@ public class AnnouncementResponseDto
     public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
+    // Mobile reads "body" — alias for Content
+    public string Body => Content;
     public string Priority { get; set; } = string.Empty;
     public bool IsActive { get; set; }
     public DateTime PublishedDate { get; set; }
     public DateTime? ExpiryDate { get; set; }
     public int CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }

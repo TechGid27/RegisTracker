@@ -48,6 +48,7 @@ function NewRequest({ onCancel, onSuccess, sx = {}, isModal = false }) {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
   return (
     <Box sx={{
@@ -69,7 +70,8 @@ function NewRequest({ onCancel, onSuccess, sx = {}, isModal = false }) {
         </Typography>
       </Box>
 
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+      {error && <Alert severity="error" sx={{ mb: 2, borderRadius: 3 }}>{error}</Alert>}
+      {success && <Alert severity="success" sx={{ mb: 2, borderRadius: 3 }}>Request submitted successfully!</Alert>}
 
       {/* ✅ FORMIK */}
       <Formik
@@ -98,7 +100,8 @@ function NewRequest({ onCancel, onSuccess, sx = {}, isModal = false }) {
             await createRequest(payload);
 
             resetForm();
-            alert("Success! Your request has been submitted.");
+            setSuccess(true);
+            setTimeout(() => setSuccess(false), 3000);
             if (typeof onSuccess === 'function') onSuccess();
 
           } catch (err) {

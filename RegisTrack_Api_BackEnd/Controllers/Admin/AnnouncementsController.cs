@@ -60,7 +60,8 @@ public class AnnouncementsController : ControllerBase
                     PublishedDate = a.PublishedDate,
                     ExpiryDate = a.ExpiryDate,
                     CreatedBy = a.CreatedBy,
-                    CreatedAt = a.CreatedAt
+                    CreatedAt = a.CreatedAt,
+                    UpdatedAt = a.UpdatedAt
                 })
                 .ToListAsync();
 
@@ -93,7 +94,8 @@ public class AnnouncementsController : ControllerBase
                     PublishedDate = a.PublishedDate,
                     ExpiryDate = a.ExpiryDate,
                     CreatedBy = a.CreatedBy,
-                    CreatedAt = a.CreatedAt
+                    CreatedAt = a.CreatedAt,
+                    UpdatedAt = a.UpdatedAt
                 })
                 .FirstOrDefaultAsync();
 

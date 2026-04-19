@@ -152,7 +152,7 @@ class _DocumentTypeCard extends StatelessWidget {
                          children: [
                            const Icon(Icons.check_circle_outline_rounded, size: 16, color: Color(0xFF16A34A)),
                            const SizedBox(width: 12),
-                           Expanded(child: Text(req['description'] ?? req['name'] ?? 'Requirement', style: const TextStyle(color: Color(0xFF334155), fontSize: 14))),
+                           Expanded(child: Text(req['requirementName'] ?? req['description'] ?? req['name'] ?? 'Requirement', style: const TextStyle(color: Color(0xFF334155), fontSize: 14))),
                          ],
                        ),
                      )),

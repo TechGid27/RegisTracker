@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import {
   Box, Container, Paper, Typography, TextField,
-  Button, Grid, Link as MuiLink, Stack, CircularProgress, Alert
+  Button, Link as MuiLink, Stack, CircularProgress, Alert
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { Formik, FastField } from 'formik';
@@ -13,7 +13,7 @@ const validationSchema = Yup.object({
   firstName: Yup.string().required('First name is required'),
   lastName: Yup.string().required('Last name is required'),
   email: Yup.string().email('Enter a valid email').required('Email is required'),
-  studentId: Yup.string().required('Student ID is required'),
+  studentId: Yup.string().min(5, 'Student ID must be at least 5 characters').required('Student ID is required'),
   password: Yup.string().min(8, 'At least 8 characters').required('Password is required'),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
@@ -207,26 +207,16 @@ const Register = () => {
           >
             {({ handleSubmit }) => (
               <Box component="form" onSubmit={handleSubmit} noValidate>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                <Stack spacing={2}>
+                  <Stack direction="row" spacing={2}>
                     <FormInput name="firstName" label="First Name" />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
                     <FormInput name="lastName" label="Last Name" />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormInput name="studentId" label="Student ID" placeholder="e.g. 2024-0001" />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormInput name="email" label="Email Address" type="email" />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <FormInput name="password" label="Password" type="password" />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <FormInput name="confirmPassword" label="Confirm Password" type="password" />
-                  </Grid>
-                </Grid>
+                  </Stack>
+                  <FormInput name="studentId" label="Student ID" placeholder="e.g. 2024-0001" />
+                  <FormInput name="email" label="Email Address" type="email" />
+                  <FormInput name="password" label="Password" type="password" />
+                  <FormInput name="confirmPassword" label="Confirm Password" type="password" />
+                </Stack>
 
                 <Button
                   type="submit"

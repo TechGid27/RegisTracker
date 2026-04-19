@@ -213,28 +213,6 @@ export default function Home() {
         <DialogActions sx={{ p: 3 }}><Button onClick={() => setOpenResult(false)} variant="contained" fullWidth sx={{ borderRadius: 3, bgcolor: '#1a237e' }}>Close Details</Button></DialogActions>
       </Dialog>
 
-      {/* Requirements Section */}
-      <Container maxWidth="lg" sx={{ py: 15 }}>
-        <Grid container spacing={10} alignItems="center">
-          <Grid item xs={12} md={6}>
-            <Box sx={{ position: 'relative' }}>
-              <Box sx={{ position: 'absolute', top: -20, left: -20, right: 20, bottom: 20, bgcolor: 'primary.main', borderRadius: 8, opacity: 0.1 }} />
-              <Box component="img" src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=800" sx={{ width: '100%', borderRadius: 8, position: 'relative', boxShadow: '0 30px 60px rgba(0,0,0,0.15)' }} />
-            </Box>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h3" fontWeight="800" gutterBottom>Requirements</Typography>
-            <Stack spacing={4}>
-              {[{ title: 'Valid Identification', icon: <AssignmentIndIcon />, color: '#3f51b5' }, { title: 'Clearance Form', icon: <TaskAltIcon />, color: '#4caf50' }].map((item, i) => (
-                <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                  <Box sx={{ p: 2, borderRadius: 4, bgcolor: 'white', color: item.color, boxShadow: '0 10px 20px rgba(0,0,0,0.05)', display: 'flex' }}>{item.icon}</Box>
-                  <Typography variant="h6" fontWeight="700">{item.title}</Typography>
-                </Box>
-              ))}
-            </Stack>
-          </Grid>
-        </Grid>
-      </Container>
     </Box>
   );
 }

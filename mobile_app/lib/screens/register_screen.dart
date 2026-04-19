@@ -92,26 +92,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           if (_errorMessage != null) _buildErrorAlert(),
 
-                          Row(
-                            children: [
-                              Expanded(
-                                child: _buildInput(
-                                  controller: _firstNameController,
-                                  label: 'First Name',
-                                  icon: Icons.person_outline,
-                                  textInputAction: TextInputAction.next,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: _buildInput(
-                                  controller: _lastNameController,
-                                  label: 'Last Name',
-                                  icon: Icons.badge_outlined,
-                                  textInputAction: TextInputAction.next,
-                                ),
-                              ),
-                            ],
+                          _buildInput(
+                            controller: _firstNameController,
+                            label: 'First Name',
+                            icon: Icons.person_outline,
+                            textInputAction: TextInputAction.next,
+                          ),
+                          const SizedBox(height: 16),
+                          _buildInput(
+                            controller: _lastNameController,
+                            label: 'Last Name',
+                            icon: Icons.badge_outlined,
+                            textInputAction: TextInputAction.next,
                           ),
                           const SizedBox(height: 16),
                           _buildInput(
@@ -251,7 +243,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       validator: (val) {
         if (val == null || val.isEmpty) return 'Required';
-        if (!isConfirm && val.length < 6) return 'Min 6 characters';
+        if (!isConfirm && val.length < 8) return 'Min 8 characters';
         if (isConfirm && val != _passwordController.text) return 'Mismatch';
         return null;
       },

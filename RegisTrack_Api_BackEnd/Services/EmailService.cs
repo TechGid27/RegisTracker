@@ -1,5 +1,6 @@
-using System.Net;
-using System.Net.Mail;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
 
 namespace Doctrack_backend_api.Services;
 
@@ -29,27 +30,24 @@ public class SmtpEmailSender : IEmailSender
         var fromEmail = _config["Email:FromEmail"]!;
         var fromName = _config["Email:FromName"]!;
 
-        using var client = new SmtpClient(host, port)
-        {
-            Credentials = new NetworkCredential(username, password),
-            EnableSsl = true
-        };
+        var mail = new MimeMessage();
+        mail.From.Add(new MailboxAddress(fromName, fromEmail));
+        mail.To.Add(new MailboxAddress(message.ToName, message.ToEmail));
+        mail.Subject = message.Subject;
 
-        var mail = new MailMessage
-        {
-            From = new MailAddress(fromEmail, fromName),
-            Subject = message.Subject,
-            Body = message.HtmlBody,
-            IsBodyHtml = true
-        };
-        mail.To.Add(new MailAddress(message.ToEmail, message.ToName));
+        var bodyBuilder = new BodyBuilder { HtmlBody = message.HtmlBody };
 
-        if (!string.IsNullOrEmpty(message.AttachmentPath) && System.IO.File.Exists(message.AttachmentPath))
-        {
-            mail.Attachments.Add(new Attachment(message.AttachmentPath));
-        }
+        if (!string.IsNullOrEmpty(message.AttachmentPath) && File.Exists(message.AttachmentPath))
+            bodyBuilder.Attachments.Add(message.AttachmentPath);
 
-        await client.SendMailAsync(mail);
+        mail.Body = bodyBuilder.ToMessageBody();
+
+        using var client = new SmtpClient();
+        await client.ConnectAsync(host, port, SecureSocketOptions.StartTls);
+        await client.AuthenticateAsync(username, password);
+        await client.SendAsync(mail);
+        await client.DisconnectAsync(true);
+
         _logger.LogInformation("Email sent to {Email} - {Subject}", message.ToEmail, message.Subject);
     }
 }

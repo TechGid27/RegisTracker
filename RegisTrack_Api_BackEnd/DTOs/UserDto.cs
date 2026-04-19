@@ -43,6 +43,9 @@ public class UpdateUserDto
     [EmailAddress(ErrorMessage = "Invalid email format")]
     [StringLength(255, ErrorMessage = "Email cannot exceed 255 characters")]
     public string? Email { get; set; }
+
+    [StringLength(100)]
+    public string? Department { get; set; }
     
     public bool? IsActive { get; set; }
 }
@@ -55,6 +58,7 @@ public class UserResponseDto
     public string Email { get; set; } = string.Empty;
     public string StudentId { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
+    public string? Department { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
 }

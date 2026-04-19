@@ -111,6 +111,48 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> forgotPassword(String email) async {
+    try {
+      final response = await _client
+          .post(
+            Uri.parse('${ApiConfig.baseUrl}${ApiConfig.auth}/forgot-password'),
+            headers: {'Content-Type': 'application/json'},
+            body: json.encode({'email': email}),
+          )
+          .timeout(_timeout);
+      if (response.statusCode == 200) {
+        return {'success': true};
+      }
+      final body = response.body.isNotEmpty ? json.decode(response.body) : {};
+      return {'success': false, 'message': body['message'] ?? 'Failed to send reset code'};
+    } on TimeoutException {
+      return {'success': false, 'message': 'Request timed out'};
+    } catch (e) {
+      return {'success': false, 'message': 'Connection error: $e'};
+    }
+  }
+
+  static Future<Map<String, dynamic>> resetPassword(String email, String otp, String newPassword) async {
+    try {
+      final response = await _client
+          .post(
+            Uri.parse('${ApiConfig.baseUrl}${ApiConfig.auth}/reset-password'),
+            headers: {'Content-Type': 'application/json'},
+            body: json.encode({'email': email, 'otp': otp, 'newPassword': newPassword}),
+          )
+          .timeout(_timeout);
+      if (response.statusCode == 200) {
+        return {'success': true};
+      }
+      final body = response.body.isNotEmpty ? json.decode(response.body) : {};
+      return {'success': false, 'message': body['message'] ?? 'Failed to reset password'};
+    } on TimeoutException {
+      return {'success': false, 'message': 'Request timed out'};
+    } catch (e) {
+      return {'success': false, 'message': 'Connection error: $e'};
+    }
+  }
+
   static Future<Map<String, dynamic>> resendOtp(String email) async {
     try {
       final response = await _client
@@ -232,7 +274,7 @@ class ApiService {
     try {
       final headers = await _getHeaders();
       final response = await _client
-          .get(Uri.parse('${ApiConfig.baseUrl}${ApiConfig.documentRequests}'), headers: headers)
+          .get(Uri.parse('${ApiConfig.baseUrl}${ApiConfig.documentRequests}?pageSize=100'), headers: headers)
           .timeout(_timeout);
       if (response.statusCode == 200) return await _decodeJson(response.body);
       return [];
@@ -249,7 +291,7 @@ class ApiService {
       final headers = await _getHeaders();
       final response = await _client
           .get(
-            Uri.parse('${ApiConfig.baseUrl}${ApiConfig.documentRequests}/user/$userId'),
+            Uri.parse('${ApiConfig.baseUrl}${ApiConfig.documentRequests}/user/$userId?pageSize=100'),
             headers: headers,
           )
           .timeout(_timeout);

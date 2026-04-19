@@ -21,6 +21,40 @@ public class DocumentRequirementsController : ControllerBase
     }
 
     /// <summary>
+    /// GET: api/DocumentRequirements/type/{typeId} - Get requirements for a specific document type (mobile-friendly route)
+    /// </summary>
+    [HttpGet("type/{typeId}")]
+    public async Task<ActionResult<IEnumerable<DocumentRequirementResponseDto>>> GetByDocumentType(int typeId)
+    {
+        try
+        {
+            var requirements = await _context.DocumentRequirements
+                .Include(dr => dr.DocumentType)
+                .Where(dr => dr.DocumentTypeId == typeId)
+                .OrderBy(dr => dr.DisplayOrder)
+                .Select(dr => new DocumentRequirementResponseDto
+                {
+                    Id = dr.Id,
+                    DocumentTypeId = dr.DocumentTypeId,
+                    DocumentTypeName = dr.DocumentType.Name,
+                    RequirementName = dr.RequirementName,
+                    Description = dr.Description,
+                    IsMandatory = dr.IsMandatory,
+                    DisplayOrder = dr.DisplayOrder,
+                    CreatedAt = dr.CreatedAt
+                })
+                .ToListAsync();
+
+            return Ok(requirements);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error retrieving requirements for document type {TypeId}", typeId);
+            return StatusCode(500, new { message = "An error occurred while retrieving document requirements" });
+        }
+    }
+
+    /// <summary>
     /// GET: api/DocumentRequirements - Retrieve all document requirements
     /// </summary>
     [HttpGet]

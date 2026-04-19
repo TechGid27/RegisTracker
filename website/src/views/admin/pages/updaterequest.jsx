@@ -176,11 +176,18 @@ function UpdateRequest({ idFromProp, onClose, isModal }) {
                         </TextField>
                     </Grid>
                     <Grid item size={12}>
-                        <TextField label="Internal Remarks" fullWidth value={notes} onChange={(e) => setNotes(e.target.value)} sx={{ '& .MuiOutlinedInput-root': { borderRadius: '16px' } }} />
+                        <TextField
+                          label="Internal Remarks / Notes"
+                          fullWidth
+                          multiline
+                          rows={4}
+                          value={notes}
+                          onChange={(e) => setNotes(e.target.value)}
+                          placeholder="Add notes or remarks for this status update..."
+                          sx={{ '& .MuiOutlinedInput-root': { borderRadius: '16px' } }}
+                        />
                     </Grid>
                     </Grid>
-
-                    <TextField label="Detailed Update Description" multiline rows={6} fullWidth value={notes} onChange={(e) => setNotes(e.target.value)} sx={{ '& .MuiOutlinedInput-root': { borderRadius: '20px' } }} />
 
                     <Box sx={{ p: 3, border: '2px dashed #E0E5F2', borderRadius: '20px', textAlign: 'center' }}>
                     <Typography variant="body2" fontWeight="700" color="#707EAE" mb={2}>{isUploaded ? "REPLACE DOCUMENT" : "UPLOAD DOCUMENT"}</Typography>

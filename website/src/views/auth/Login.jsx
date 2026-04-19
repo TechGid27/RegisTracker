@@ -4,7 +4,7 @@ import {
   Button, Link as MuiLink, 
   Stack, InputAdornment, IconButton, Alert 
 } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { UseAuth } from '../../context/AuthContext'; 
 import { Formik, FastField } from 'formik';
 import * as Yup from 'yup';
@@ -52,9 +52,11 @@ const FormInput = React.memo(({ name, label, type = "text", showPassword, toggle
 const Login = () => {
   const { login } = UseAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const successMsg = location.state?.message || '';
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 0 }}>
@@ -91,6 +93,7 @@ const Login = () => {
             </Stack>
 
             {error && <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>{error}</Alert>}
+            {successMsg && <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>{successMsg}</Alert>}
 
             {/* ✅ FORMIK */}
             <Formik
@@ -111,9 +114,11 @@ const Login = () => {
 
                   if (userRole === 'Admin') {
                     navigate('/admin/dashboard');
-                  }else{
+                  } else if (userRole === 'Staff') {
+                    navigate('/staff/dashboard');
+                  } else {
                     navigate('/dashboard');
-                  } 
+                  }
                   
 
                 } else {
@@ -135,6 +140,16 @@ const Login = () => {
                     showPassword={showPassword}
                     togglePassword={() => setShowPassword(!showPassword)}
                   />
+
+                  <Box sx={{ textAlign: 'right', mt: 0.5 }}>
+                    <MuiLink
+                      component={Link}
+                      to="/forgot-password"
+                      sx={{ fontSize: '0.85rem', color: '#1A237E', textDecoration: 'none', fontWeight: 600 }}
+                    >
+                      Forgot password?
+                    </MuiLink>
+                  </Box>
 
                   <Button
                     fullWidth

@@ -49,6 +49,44 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const changePassword = async (payload) => {
+    try {
+      return await authService.changePassword(payload);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const forgotPassword = async (payload) => {
+    try {
+      return await authService.forgotPassword(payload);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const resetPassword = async (payload) => {
+    try {
+      return await authService.resetPassword(payload);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const updateUser = async (id, data) => {
+    try {
+      const { userService } = await import('../api/UserService');
+      const updated = await userService.update(id, data);
+      // Sync localStorage + state
+      const merged = { ...user, ...updated };
+      localStorage.setItem('user', JSON.stringify(merged));
+      setUser(merged);
+      return updated;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const login = async (credentials) => {
     try {
       const data = await authService.login(credentials);
@@ -68,7 +106,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, verifyEmail, resendOtp, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register, verifyEmail, resendOtp, changePassword, forgotPassword, resetPassword, updateUser, logout, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );

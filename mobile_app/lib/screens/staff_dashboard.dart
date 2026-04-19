@@ -59,10 +59,22 @@ class _StaffDashboardState extends State<StaffDashboard> {
 
       if (mounted) {
         setState(() {
-          _pendingCount = requests.where((r) => r['status']?.toLowerCase() == 'request' || r['status']?.toLowerCase() == 'pending').length;
-          _processingCount = requests.where((r) => r['status']?.toLowerCase() == 'in process' || r['status']?.toLowerCase() == 'processing').length;
-          _completedCount = requests.where((r) => r['status']?.toLowerCase() == 'completed' || r['status']?.toLowerCase() == 'approved').length;
-          _pendingRequests = requests.where((r) => r['status']?.toLowerCase() == 'request' || r['status']?.toLowerCase() == 'pending').take(3).toList();
+          _pendingCount = requests.where((r) {
+            final s = r['status']?.toString() ?? '';
+            return s == 'Request';
+          }).length;
+          _processingCount = requests.where((r) {
+            final s = r['status']?.toString() ?? '';
+            return s == 'InProcess';
+          }).length;
+          _completedCount = requests.where((r) {
+            final s = r['status']?.toString() ?? '';
+            return s == 'Approve' || s == 'Receive' || s == 'Download';
+          }).length;
+          _pendingRequests = requests.where((r) {
+            final s = r['status']?.toString() ?? '';
+            return s == 'Request';
+          }).take(3).toList();
           _notificationCount = unreadCount;
           _isLoading = false;
         });

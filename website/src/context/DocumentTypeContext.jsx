@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { metaService } from '../api/metaService'; 
+import { metaService } from '../api/MetaService';
 
 const DocumentTypeContext = createContext();
 

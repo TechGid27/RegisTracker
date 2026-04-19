@@ -139,6 +139,63 @@ public class AuthController : ControllerBase
         });
     }
 
+    [HttpPost("change-password")]
+    [Microsoft.AspNetCore.Authorization.Authorize]
+    public async Task<ActionResult> ChangePassword(ChangePasswordDto dto)
+    {
+        var user = await _context.Users.FindAsync(dto.UserId);
+        if (user == null)
+            return NotFound(new { message = "User not found" });
+
+        if (!VerifyPassword(dto.CurrentPassword, user.PasswordHash))
+            return BadRequest(new { message = "Current password is incorrect" });
+
+        user.PasswordHash = HashPassword(dto.NewPassword);
+        user.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Password changed successfully" });
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<ActionResult> ForgotPassword(ForgotPasswordDto dto)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+
+        // Always return OK to avoid email enumeration
+        if (user == null || !user.IsActive)
+            return Ok(new { message = "If that email exists, a reset code has been sent." });
+
+        var otp = GenerateOtp();
+        user.OtpCode = otp;
+        user.OtpExpiresAt = DateTime.UtcNow.AddMinutes(10);
+        await _context.SaveChangesAsync();
+
+        _emailService.QueueOtpEmail(user.Email, $"{user.FirstName} {user.LastName}", otp);
+
+        return Ok(new { message = "If that email exists, a reset code has been sent." });
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<ActionResult> ResetPassword(ResetPasswordDto dto)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+
+        if (user == null)
+            return BadRequest(new { message = "Invalid request" });
+
+        if (user.OtpCode != dto.Otp || user.OtpExpiresAt < DateTime.UtcNow)
+            return BadRequest(new { message = "Invalid or expired reset code" });
+
+        user.PasswordHash = HashPassword(dto.NewPassword);
+        user.OtpCode = null;
+        user.OtpExpiresAt = null;
+        user.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Password reset successfully" });
+    }
+
     private static string GenerateOtp() =>
         Random.Shared.Next(100000, 999999).ToString();
 

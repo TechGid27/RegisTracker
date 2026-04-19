@@ -156,12 +156,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (_user == null) return;
     _isSavingPassword.value = true;
 
-    final result = await ApiService.updateUser(_user!.id!, {
-      'id': _user!.id,
-      'currentPassword': _currentPassCtrl.text,
-      'newPassword': _newPassCtrl.text,
-      'confirmPassword': _confirmPassCtrl.text,
-    });
+    final result = await ApiService.changePassword(
+      _user!.id!,
+      _currentPassCtrl.text,
+      _newPassCtrl.text,
+    );
 
     if (!mounted) return;
     _isSavingPassword.value = false;

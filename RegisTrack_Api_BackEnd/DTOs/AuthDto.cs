@@ -64,3 +64,38 @@ public class ResendOtpDto
     [EmailAddress]
     public string Email { get; set; } = string.Empty;
 }
+
+public class ChangePasswordDto
+{
+    [Required]
+    public int UserId { get; set; }
+
+    [Required]
+    public string CurrentPassword { get; set; } = string.Empty;
+
+    [Required]
+    [StringLength(100, MinimumLength = 8)]
+    public string NewPassword { get; set; } = string.Empty;
+}
+
+public class ForgotPasswordDto
+{
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
+}
+
+public class ResetPasswordDto
+{
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; } = string.Empty;
+
+    [Required]
+    [StringLength(6, MinimumLength = 6)]
+    public string Otp { get; set; } = string.Empty;
+
+    [Required]
+    [StringLength(100, MinimumLength = 8)]
+    public string NewPassword { get; set; } = string.Empty;
+}

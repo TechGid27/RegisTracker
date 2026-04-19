@@ -38,6 +38,9 @@ public class User
     public string? OtpCode { get; set; }
 
     public DateTime? OtpExpiresAt { get; set; }
+
+    [StringLength(100)]
+    public string? Department { get; set; }
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
